@@ -1,0 +1,26 @@
+{
+  "name": "appointment-scheduler",
+  "version": "1.0.0",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+  "dev": "nodemon src/server.js",
+  "start": "node src/server.js"
+},
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "chrono-node": "^2.9.0",
+    "cors": "^2.8.5",
+    "express": "^5.1.0",
+    "luxon": "^3.7.2",
+    "morgan": "^1.10.1",
+    "multer": "^2.0.2",
+    "tesseract.js": "^6.0.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.10"
+  }
+}
