@@ -121,6 +121,29 @@ Form-Data: image = <upload your .jpg/.png file>
 }
 ```
 
+
+
+---
+
+## 🖼 Screenshots
+
+### Server Running
+![Server Running](screenshots/server-running.png)
+
+### Extracting Json from Image
+![Parse Text Endpoint](screenshots/image_to_json.png)
+
+### Extracting Json from Text
+![OCR Endpoint](screenshots/text_to_json.png)
+
+
+---
+
+
+
+
+
+
 ---
 
 ## 🧠 AI Chaining and Validation

@@ -12,3 +12,9 @@ const PORT = 5000;
 app.listen(PORT, () =>
   console.log(`Server running on http://localhost:${PORT}`)
 );
+
+
+
+// ngrok commands
+// ngrok config add-authtoken
+// ngrok http 5000
