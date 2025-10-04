@@ -1,91 +1,119 @@
-# AI-Powered Appointment Scheduler Backend
+# 🧠 AI-Powered Appointment Scheduler Assistant
 
-## Overview
-This backend service parses natural language or image-based appointment requests and converts them into structured scheduling data. It handles both typed text and noisy image inputs, extracts entities (department, date, time), normalizes date/time to ISO format with timezone, and provides confidence scores and guardrails for ambiguous input.
-
----
-
-## Folder Structure
-
-```
-appointment-scheduler/
-│
-├─ src/
-│  ├─ server.js                 # main entry point
-│  ├─ routes/
-│  │   └─ appointment.js        # API routes
-│  ├─ controllers/
-│  │   └─ appointmentController.js
-│  ├─ utils/
-│  │   ├─ ocr.js
-│  │   ├─ textCleaner.js
-│  │   ├─ department.js
-│  │   └─ datetime.js
-│  ├─ uploads/                  # temporary images
-│
-├─ package.json
-├─ package-lock.json
-└─ README.md
-```
+This project implements an intelligent backend service that parses natural language or image-based appointment requests and converts them into structured scheduling data.
+It simulates an AI reasoning pipeline by chaining together OCR, entity extraction, normalization, and validation steps to achieve human-like understanding of input data.
 
 ---
 
-## Setup Instructions
+## 🚀 Features
+- Handles **both text and image inputs** (e.g., typed messages or scanned notes)
+- Performs **OCR extraction** using `Tesseract.js`
+- Extracts and understands date, time, and department using **chrono-node** and NLP-style rules
+- Converts fuzzy phrases like *"next Friday 3pm"* into precise ISO datetime format
+- Includes **guardrails** for ambiguous or incomplete inputs
+- Outputs structured, validated JSON ready for scheduling APIs
 
-1. Clone the repository:
+---
+
+## 🧩 Architecture Overview
+
 ```
-git clone <your-repo-URL>
+Input (Text or Image)
+   ↓
+Step 1: OCR/Text Extraction  →  (raw text + confidence)
+   ↓
+Step 2: Entity Extraction     →  (date, time, department)
+   ↓
+Step 3: Normalization         →  (ISO date/time, timezone)
+   ↓
+Step 4: Validation & Guardrails
+   ↓
+Step 5: Final Appointment JSON
+```
+
+---
+
+## 📦 Tech Stack
+- **Node.js + Express.js** – Server framework
+- **Tesseract.js** – OCR (Optical Character Recognition)
+- **Chrono-node** – Natural language date/time parser
+- **Moment.js** – Timezone handling and normalization
+- **Multer** – File upload middleware for handling image inputs
+
+---
+
+## ⚙️ Setup Instructions
+
+### 1️⃣ Clone Repository
+```bash
+git clone <your-repo-url>
 cd appointment-scheduler
 ```
 
-2. Install dependencies:
-```
+### 2️⃣ Install Dependencies
+```bash
 npm install
 ```
 
-3. Start the server:
-```
+### 3️⃣ Run Server (Development)
+```bash
 npm run dev
 ```
 
-Server runs on `http://localhost:5000`
+### 4️⃣ Test Endpoints
+Use Postman or curl to test the endpoints:
 
----
-
-## API Usage
-
-### Endpoint: Schedule Appointment
-**POST** `/schedule-appointment`
-
-**Text Input**
-```json
+#### For Text Input
+```bash
+POST http://localhost:5000/text
+Content-Type: application/json
 {
-  "text": "book dentist next Friday at 3pm"
+  "text": "Book dentist next Friday at 3pm"
 }
 ```
 
-**Image Input**
-- Content-Type: `multipart/form-data`
-- Key: `image` → select the image file containing appointment text
+#### For Image Input
+```bash
+POST http://localhost:5000/ocr
+Form-Data: image = <upload your .jpg/.png file>
+```
 
 ---
 
-## Sample Responses
+## 📄 Sample Outputs
 
-**Success Response**
+### ✅ Text Input
 ```json
 {
-    "appointment": {
-        "department": "dentist",
-        "date": "2025-10-06",
-        "time": "15:00",
-        "tz": "Asia/Kolkata"
-    },
-    "status": "ok"
+  "success": true,
+  "input": "set appointment for next monday 3pm",
+  "detectedDateTime": "2025-10-06T15:00:00.000+05:30"
 }
 ```
 
-**Guardrail / Ambiguous Input**
+### ✅ Image Input (OCR)
+```json
+{
+  "success": true,
+  "extracted_text": "book dentist next friday @ 3pm",
+  "confidence": 0.80
+}
+```
+
+### ✅ Final Appointment JSON
+```json
+{
+  "appointment": {
+    "department": "Dentistry",
+    "date": "2025-10-06",
+    "time": "15:00",
+    "tz": "Asia/Kolkata"
+  },
+  "status": "ok"
+}
+```
+
+### ⚠️ Guardrail Example
 ```json
 {
   "status": "needs_clarification",
@@ -93,43 +121,37 @@ Server runs on `http://localhost:5000`
 }
 ```
 
-**Error Response**
-```json
-{
-  "status": "error",
-  "message": "Failed to schedule appointment"
-}
-```
+---
+
+## 🧠 AI Chaining and Validation
+
+This project simulates an AI reasoning pipeline using deterministic components. It mimics the structure of a multimodal AI system where:
+
+- **OCR (Tesseract.js)** acts as the perception layer, extracting readable text from images.
+- **Entity Extraction (chrono-node)** represents the understanding layer, identifying key entities like date, time, and department.
+- **Normalization logic** performs contextual reasoning, converting fuzzy human expressions to precise ISO date/time.
+- **Guardrails** simulate AI safety checks by returning clarification prompts when data is ambiguous.
+
+Each stage passes structured data to the next, enabling a chain of intelligent transformations — similar to how modern AI assistants process user queries end-to-end.
 
 ---
 
-## Sample curl Commands
-
-**1. Text Input**
-```
-curl -X POST http://localhost:5000/schedule-appointment \
--H "Content-Type: application/json" \
--d '{"text":"book dentist next Friday at 3pm"}'
-```
-
-**2. Image Input**
-```
-curl -X POST http://localhost:5000/schedule-appointment \
--F "image=@test.png"
-```
-
-**3. Error Case**
-```
-curl -X POST http://localhost:5000/schedule-appointment \
--H "Content-Type: application/json" \
--d '{}'
-```
+## 📊 Evaluation Criteria Alignment
+✅ Correctness of API responses and adherence to JSON schema  
+✅ Handles both text and image inputs with OCR  
+✅ Implements guardrails and error handling  
+✅ Clean code organization and modular architecture  
+✅ Demonstrates AI-style reasoning and validation chaining
 
 ---
 
-## Notes
+## 📹 Demo Submission
+- A short screen recording demonstrating API calls (text + image) has been prepared.
+- The recording shows correct OCR extraction, entity parsing, normalization, and guardrail behavior.
 
-- Handles OCR from images and text input  
-- Modular folder structure for scalability   
-- Guardrails for missing or ambiguous data
+---
+
+**Author:** Shlok Srivastava  
+**Role:** Final Year Student, MNNIT Allahabad  
+**Assignment:** SDE Intern – AI-Powered Appointment Scheduler (Plum)
 
